@@ -16,6 +16,7 @@ import javax.persistence.*;
 @Setter
 @Entity
 public class Employee extends BaseEntity<Long> {
+
     @Column(nullable = false)
     private String firstname;
 

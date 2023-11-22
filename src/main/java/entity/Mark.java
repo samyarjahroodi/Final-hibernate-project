@@ -14,6 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 public class Mark extends BaseEntity<Long> {
+
     @ManyToOne
     private Student students;
 
@@ -27,5 +28,8 @@ public class Mark extends BaseEntity<Long> {
 
     @ManyToOne
     private Term term;
+
+    private boolean isPass;
+
 
 }

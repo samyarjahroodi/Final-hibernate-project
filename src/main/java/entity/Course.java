@@ -30,8 +30,6 @@ public class Course extends BaseEntity<Long> {
     @ManyToMany
     private List<Student> students;
 
-    private boolean isPass;
-
     @OneToMany(mappedBy = "mark", cascade = CascadeType.ALL)
     private List<Mark> marks;
 }

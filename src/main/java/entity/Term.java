@@ -14,6 +14,7 @@ import javax.persistence.Entity;
 @Getter
 @Setter
 public class Term extends BaseEntity<Long> {
+
     private int term ;
 
     private Semesters semesters;

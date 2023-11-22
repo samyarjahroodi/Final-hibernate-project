@@ -2,12 +2,14 @@ package repositories.Impl;
 
 import base.repository.Impl.BaseEntityRepositoryImpl;
 import entity.Course;
+import entity.Mark;
 import entity.Student;
 import org.hibernate.Session;
 import repositories.StudentRepository;
 import utility.SessionFactoryProvider;
 
 import javax.persistence.Query;
+import java.awt.*;
 import java.util.Collections;
 import java.util.List;
 
@@ -43,8 +45,12 @@ public class StudentRepositoryImpl
     public List<Course> passesCoursesWithMarks(Long studentId) {
         try {
             session.beginTransaction().begin();
-            session.
-
+            String hql = "SELECT m.course FROM Mark m WHERE m.students.id = :studentId AND m.isPass = true";
+            Query query = session.createQuery(hql);
+            query.setParameter("studentId", studentId);
+            List<Course> passedCourses = query.getResultList();
+            session.getTransaction().commit();
+            return passedCourses;
         } catch (Exception e) {
             e.printStackTrace();
             session.getTransaction().rollback();
@@ -116,7 +122,9 @@ public class StudentRepositoryImpl
             Student student = session.get(Student.class, studentId);
             List<Course> allCourses = student.getCourses();
             session.getTransaction().commit();
-            return allCourses.stream().filter(Course::isPass).toList();
+            return allCourses.stream()
+                    .filter(course -> course.getMarks()
+                            .stream().anyMatch(Mark::isPass)).toList();
         } catch (Exception e) {
             e.printStackTrace();
             session.getTransaction().commit();
@@ -131,12 +139,13 @@ public class StudentRepositoryImpl
             Student student = session.get(Student.class, studentId);
             List<Course> allCourses = student.getCourses();
             session.getTransaction().commit();
-            return allCourses.stream().filter(Course -> !Course.isPass()).toList();
+            return allCourses.stream()
+                    .filter(course -> course.getMarks()
+                            .stream().anyMatch(Mark -> !Mark.isPass())).toList();
         } catch (Exception e) {
             e.printStackTrace();
             session.getTransaction().commit();
             return Collections.emptyList();
         }
     }
-
 }
