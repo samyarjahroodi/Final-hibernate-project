@@ -6,6 +6,8 @@ import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 
+import javax.persistence.ManyToOne;
+
 public class SessionFactoryProvider {
     private final static SessionFactory sessionFactory;
 

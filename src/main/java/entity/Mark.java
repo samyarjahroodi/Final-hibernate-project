@@ -1,31 +1,31 @@
 package entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import base.domain.BaseEntity;
+import lombok.*;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
-@NoArgsConstructor
-
-public class Mark {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class Mark extends BaseEntity<Long> {
     @ManyToOne
-    private Student student;
+    private Student students;
 
     @ManyToOne
     private Course course;
 
-    @OneToOne
+    private int mark;
+
+    @ManyToOne
     private Teacher teacher;
 
-    private Integer mark;
+    @ManyToOne
+    private Term term;
+
 }

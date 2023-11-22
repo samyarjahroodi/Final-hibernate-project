@@ -1,9 +1,9 @@
 package entity;
 
+import base.domain.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
@@ -12,18 +12,26 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Entity
-public class Course {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Course extends BaseEntity<Long> {
+
     @Column(unique = true, nullable = false)
     private String courseCode;
+
+    @Column(nullable = false)
+    private int unit;
+
     @Column(nullable = false)
     private String nameOfTheCourse;
+
     @ManyToOne
+    @JoinColumn(nullable = false)
     private Teacher teacher;
+
     @ManyToMany
     private List<Student> students;
+
+    private boolean isPass;
+
     @OneToMany(mappedBy = "mark", cascade = CascadeType.ALL)
     private List<Mark> marks;
 }

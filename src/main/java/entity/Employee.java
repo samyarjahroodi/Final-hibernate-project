@@ -1,5 +1,6 @@
 package entity;
 
+import base.domain.BaseEntity;
 import com.sun.istack.NotNull;
 import com.sun.istack.Nullable;
 import lombok.AllArgsConstructor;
@@ -14,16 +15,17 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Entity
-public class Employee {
-    @Getter
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Employee extends BaseEntity<Long> {
     @Column(nullable = false)
     private String firstname;
+
     @Column(nullable = false)
     private String lastname;
+
     @Column(unique = true, nullable = false)
-    private String employeesCode;
+    private String employeeCode;
+
+    @Column(nullable = false)
     private double salary;
+
 }

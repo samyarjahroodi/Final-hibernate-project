@@ -1,5 +1,6 @@
 package entity;
 
+import base.domain.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,15 +14,22 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-public class Teacher {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Teacher extends BaseEntity<Long> {
     private String firstname;
+
     private String lastname;
+
     @Column(unique = true, nullable = false)
-    private String teachersCode;
+    private String teacherCode;
+
     private double salary;
-    @OneToMany(mappedBy = "teacher",cascade = CascadeType.ALL)
+
+    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL)
     private List<Course> course;
+
+    private Boolean scienceCommittee;
+
+    @OneToMany(mappedBy = "mark", cascade = CascadeType.ALL)
+    private List<Mark> marks;
+
 }
