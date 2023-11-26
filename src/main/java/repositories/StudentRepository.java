@@ -1,12 +1,13 @@
 package repositories;
 
 import base.repository.BaseEntityRepository;
-import entity.Course;
-import entity.Student;
+import domain.Course;
+import domain.Student;
 
 import java.util.List;
 
-public interface StudentRepository extends BaseEntityRepository<Student, Long> {
+public interface StudentRepository
+        extends BaseEntityRepository<Student, Long> {
 
     void addCourseToStudent(Long studentId, Course course);
 

@@ -1,17 +1,16 @@
 package repositories;
 
 import base.repository.BaseEntityRepository;
-import entity.Course;
-import entity.Teacher;
-import org.hibernate.Session;
+import domain.Course;
+import domain.Teacher;
 
-public interface TeacherRepository  {
+public interface TeacherRepository
+        extends BaseEntityRepository<Teacher, Long> {
 
-    Teacher seeTeacherItems(Teacher teacher,Long ID);
+    Teacher seeTeacherItems(Teacher teacher, Long ID);
 
-    void giveMarkToStudents(Course course);
+    void giveMarkToStudents(Course course, int markValue);
 
-    double salary(boolean scienceCommittee,Long id);
-
+    Integer getTotalUnitsForTeacher(Long teacherId);
 
 }

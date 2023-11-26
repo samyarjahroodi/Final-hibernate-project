@@ -1,12 +1,16 @@
 package services;
 
-import entity.Course;
-import entity.Teacher;
+import base.service.BaseEntityService;
+import domain.Course;
+import domain.Teacher;
 
-public interface TeacherService {
+public interface TeacherService
+        extends BaseEntityService<Teacher, Long> {
     Teacher seeTeacherItems(Teacher teacher, Long ID);
 
-    void giveMarkToStudents(Course course);
+    void giveMarkToStudents(Course course, int markValue);
 
-    double salary(int unit, boolean scienceCommittee);
+    double salary(Long teacherId, boolean scienceCommittee);
+
+    Integer getTotalUnitsForTeacher(Long teacherId);
 }

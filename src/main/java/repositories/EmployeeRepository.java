@@ -1,11 +1,12 @@
 package repositories;
 
 import base.repository.BaseEntityRepository;
-import entity.Employee;
-import entity.Student;
-import entity.Teacher;
+import domain.Employee;
+import domain.Student;
+import domain.Teacher;
 
-public interface EmployeeRepository extends BaseEntityRepository<Employee,Long> {
+public interface EmployeeRepository
+        extends BaseEntityRepository<Employee,Long> {
 
     void saveOrUpdateStudent(Student student);
 

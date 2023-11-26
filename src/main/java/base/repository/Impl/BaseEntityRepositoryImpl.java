@@ -7,7 +7,8 @@ import utility.SessionFactoryProvider;
 
 import java.io.Serializable;
 
-public abstract class BaseEntityRepositoryImpl<T extends BaseEntity<ID>, ID extends Serializable> implements BaseEntityRepository<T, ID> {
+public abstract class BaseEntityRepositoryImpl<T extends BaseEntity<ID>, ID extends Serializable>
+        implements BaseEntityRepository<T, ID> {
     private final Session session;
 
     public BaseEntityRepositoryImpl() {

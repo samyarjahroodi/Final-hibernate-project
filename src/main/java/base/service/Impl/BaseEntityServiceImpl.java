@@ -9,7 +9,8 @@ import utility.SessionFactoryProvider;
 import java.io.Serializable;
 
 public class BaseEntityServiceImpl<T extends BaseEntity<ID>, ID extends Serializable,
-        R extends BaseEntityRepository<T, ID>> implements BaseEntityService<T, ID> {
+        R extends BaseEntityRepository<T, ID>>
+        implements BaseEntityService<T, ID> {
     Session session = SessionFactoryProvider.getSessionFactory().openSession();
 
     protected final R baseEntityRepository;

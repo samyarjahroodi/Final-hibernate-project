@@ -1,28 +1,22 @@
 package services;
 
-import entity.Employee;
-import entity.Student;
-import entity.Teacher;
+import base.service.BaseEntityService;
+import domain.Employee;
+import domain.Student;
+import domain.Teacher;
 
-public interface EmployeeService {
+public interface EmployeeService
+        extends BaseEntityService<Employee,Long> {
 
-    void saveStudent(Student student);
+    void saveOrUpdateStudent(Student student);
 
-    void deleteStudent(String StudentCode);
+    void deleteStudent(Student student);
 
-    void updateStudent(Student student, Long id);
+    void saveOrUpdateTeacher(Teacher teacher);
 
-    void saveTeacher(Teacher teacher);
-
-    void deleteTeacher(String teacherCode);
-
-    void updateTeacher(Teacher teacher, Long id);
-
-    void saveEmployee(Employee employee);
-
-    void deleteEmployee(String employeeCode);
-
-    void updateEmployee(Employee employee, Long id);
+    void deleteTeacher(Teacher teacher);
 
     double seeSalary();
+
+
 }

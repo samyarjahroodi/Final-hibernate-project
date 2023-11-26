@@ -1,17 +1,24 @@
 package repositories.Impl;
 
-import entity.Course;
-import entity.Teacher;
+import base.repository.Impl.BaseEntityRepositoryImpl;
+import domain.Course;
+import domain.Mark;
+import domain.Student;
+import domain.Teacher;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import repositories.TeacherRepository;
-import services.TeacherService;
-import utility.SessionFactoryProvider;
 
 import java.util.List;
 
-public class TeacherRepositoryImpl implements TeacherRepository {
-    Session session = SessionFactoryProvider.getSessionFactory().openSession();
+public class TeacherRepositoryImpl extends BaseEntityRepositoryImpl<Teacher, Long>
+        implements TeacherRepository {
+
+    Session session;
+
+    public TeacherRepositoryImpl(Session session) {
+        this.session = session;
+    }
 
     @Override
     public Teacher seeTeacherItems(Teacher teacher, Long id) {
@@ -23,17 +30,22 @@ public class TeacherRepositoryImpl implements TeacherRepository {
     }
 
     @Override
-    public void giveMarkToStudents(Course course) {
-
-    }
-
-    @Override
-    public double salary( boolean scienceCommittee,Long id) {
-        Integer totalUnitsForTeacher = getTotalUnitsForTeacher(id);
-        if (scienceCommittee) {
-            return (totalUnitsForTeacher * 1000000) + 5000000;
-        } else {
-            return totalUnitsForTeacher * 1000000;
+    public void giveMarkToStudents(Course course, int markValue) {
+        try {
+            session.getTransaction().begin();
+            List<Student> students = course.getStudents();
+            for (Student s : students) {
+                Mark mark = new Mark();
+                mark.setStudents((Student) students);
+                mark.setCourse(course);
+                mark.setTeacher(course.getTeacher());
+                mark.setMark(markValue);
+                session.saveOrUpdate(mark);
+                session.beginTransaction().commit();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            session.beginTransaction().rollback();
         }
     }
 
@@ -61,4 +73,8 @@ public class TeacherRepositoryImpl implements TeacherRepository {
     }
 
 
+    @Override
+    public Class<Teacher> getEntityClass() {
+        return Teacher.class;
+    }
 }

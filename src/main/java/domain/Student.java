@@ -1,4 +1,4 @@
-package entity;
+package domain;
 
 import base.domain.BaseEntity;
 import lombok.AllArgsConstructor;
@@ -14,22 +14,26 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-public class Teacher extends BaseEntity<Long> {
+public class Student extends BaseEntity<Long> {
+
+    @Column(nullable = false)
     private String firstname;
 
+    @Column(nullable = false)
     private String lastname;
 
     @Column(unique = true, nullable = false)
-    private String teacherCode;
+    private String studentCode;
 
-    private double salary;
-
-    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL)
-    private List<Course> course;
-
-    private Boolean scienceCommittee;
+    @ManyToMany
+    private List<Course> courses;
 
     @OneToMany(mappedBy = "mark", cascade = CascadeType.ALL)
     private List<Mark> marks;
 
+    public Student(String firstname, String lastname, String studentCode) {
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.studentCode = studentCode;
+    }
 }

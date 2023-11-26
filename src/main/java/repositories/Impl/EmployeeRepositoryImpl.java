@@ -1,9 +1,9 @@
 package repositories.Impl;
 
 import base.repository.Impl.BaseEntityRepositoryImpl;
-import entity.Employee;
-import entity.Student;
-import entity.Teacher;
+import domain.Employee;
+import domain.Student;
+import domain.Teacher;
 import org.hibernate.Session;
 import repositories.EmployeeRepository;
 import utility.SessionFactoryProvider;
@@ -12,7 +12,12 @@ import utility.SessionFactoryProvider;
 public class EmployeeRepositoryImpl
         extends BaseEntityRepositoryImpl<Employee, Long>
         implements EmployeeRepository {
-    Session session = SessionFactoryProvider.getSessionFactory().openSession();
+
+    Session session ;
+
+    public EmployeeRepositoryImpl(Session session) {
+        this.session = session;
+    }
 
     @Override
     public void saveOrUpdateStudent(Student student) {
@@ -30,7 +35,8 @@ public class EmployeeRepositoryImpl
     public void deleteStudent(Student student) {
         try {
             session.beginTransaction().begin();
-            session.delete(student);
+            Student student1 = session.find(Student.class, student.getId());
+            session.delete(student1);
             session.beginTransaction().commit();
         } catch (Exception e) {
             e.printStackTrace();
@@ -54,7 +60,8 @@ public class EmployeeRepositoryImpl
     public void deleteTeacher(Teacher teacher) {
         try {
             session.beginTransaction().begin();
-            session.delete(teacher);
+            Teacher teacher1 = session.find(Teacher.class, teacher.getId());
+            session.delete(teacher1);
             session.beginTransaction().commit();
         } catch (Exception e) {
             e.printStackTrace();

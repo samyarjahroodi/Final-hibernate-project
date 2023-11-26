@@ -1,12 +1,11 @@
-package entity;
+package domain;
 
 import base.domain.BaseEntity;
 import lombok.*;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -15,19 +14,16 @@ import java.util.List;
 @Setter
 public class Mark extends BaseEntity<Long> {
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Student students;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Course course;
 
     private int mark;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Teacher teacher;
-
-    @ManyToOne
-    private Term term;
 
     private boolean isPass;
 

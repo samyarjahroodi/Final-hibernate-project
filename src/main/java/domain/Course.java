@@ -1,4 +1,4 @@
-package entity;
+package domain;
 
 import base.domain.BaseEntity;
 import lombok.AllArgsConstructor;
@@ -14,22 +14,22 @@ import java.util.List;
 @Entity
 public class Course extends BaseEntity<Long> {
 
+    @Column(nullable = false)
+    private String nameOfTheCourse;
+
     @Column(unique = true, nullable = false)
     private String courseCode;
 
     @Column(nullable = false)
     private int unit;
 
-    @Column(nullable = false)
-    private String nameOfTheCourse;
-
     @ManyToOne
-    @JoinColumn(nullable = false)
+    @JoinColumn(name = "teacher_id")
     private Teacher teacher;
 
     @ManyToMany
     private List<Student> students;
 
-    @OneToMany(mappedBy = "mark", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
     private List<Mark> marks;
 }

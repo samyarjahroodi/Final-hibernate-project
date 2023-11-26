@@ -1,4 +1,4 @@
-package entity;
+package domain;
 
 import base.domain.BaseEntity;
 import lombok.AllArgsConstructor;
@@ -7,15 +7,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.HashMap;
-import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @Entity
-public class Student extends BaseEntity<Long> {
+public class Employee extends BaseEntity<Long> {
 
     @Column(nullable = false)
     private String firstname;
@@ -24,12 +22,9 @@ public class Student extends BaseEntity<Long> {
     private String lastname;
 
     @Column(unique = true, nullable = false)
-    private String studentCode;
+    private String employeeCode;
 
-    @ManyToMany
-    private List<Course> courses;
-
-    @OneToMany(mappedBy = "mark", cascade = CascadeType.ALL)
-    private List<Mark> marks;
+    @Column(nullable = false)
+    private double salary;
 
 }

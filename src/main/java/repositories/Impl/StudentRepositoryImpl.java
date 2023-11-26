@@ -1,23 +1,25 @@
 package repositories.Impl;
 
 import base.repository.Impl.BaseEntityRepositoryImpl;
-import entity.Course;
-import entity.Mark;
-import entity.Student;
+import domain.Course;
+import domain.Mark;
+import domain.Student;
 import org.hibernate.Session;
 import repositories.StudentRepository;
 import utility.SessionFactoryProvider;
 
 import javax.persistence.Query;
-import java.awt.*;
 import java.util.Collections;
 import java.util.List;
 
 public class StudentRepositoryImpl
         extends BaseEntityRepositoryImpl<Student, Long>
         implements StudentRepository {
-    Session session = SessionFactoryProvider.getSessionFactory().openSession();
+    Session session;
 
+    public StudentRepositoryImpl(Session session) {
+        this.session = session;
+    }
 
     @Override
     public double getAverageMarksForStudent(Long studentId) {
@@ -61,39 +63,47 @@ public class StudentRepositoryImpl
 
     public void addCourseToStudent(Long studentId, Course course) {
         try {
-            Student student = session.get(Student.class, studentId);
-            if (student != null) {
-                List<Course> courses = student.getCourses();
-                if (getAverageMarksForStudent(studentId) >= 18) {
-                    if (!courses.contains(course) && course.getUnit() < 24) {
-                        while (course.getUnit() <= 24) {
-                            courses.add(course);
-                            student.setCourses(courses);
-                        }
-                        session.saveOrUpdate(student);
-                    }
-                } else if (getAverageMarksForStudent(studentId) < 18 &&
-                        getAverageMarksForStudent(studentId) >= 12) {
-                    if (!courses.contains(course) && course.getUnit() < 20) {
-                        while (course.getUnit() <= 20) {
-                            courses.add(course);
-                            student.setCourses(courses);
-                        }
-                        session.saveOrUpdate(student);
-                    }
-                } else if (getAverageMarksForStudent(studentId) < 12) {
-                    if (!courses.contains(course) && course.getUnit() < 14) {
-                        while (course.getUnit() <= 14) {
-                            courses.add(course);
-                            student.setCourses(courses);
-                        }
-                        session.saveOrUpdate(student);
-                    }
-                }
-            }
+            session.beginTransaction().begin();
+            session.saveOrUpdate(course);
+            session.getTransaction().commit();
         } catch (Exception e) {
             e.printStackTrace();
+            session.getTransaction().rollback();
         }
+//        try {
+//            Student student = session.get(Student.class, studentId);
+//            if (student != null) {
+//                List<Course> courses = student.getCourses();
+//                if (getAverageMarksForStudent(studentId) >= 18) {
+//                    if (!courses.contains(course) && course.getUnit() < 24) {
+//                        while (course.getUnit() <= 24) {
+//                            courses.add(course);
+//                            student.setCourses(courses);
+//                        }
+//                        session.saveOrUpdate(student);
+//                    }
+//                } else if (getAverageMarksForStudent(studentId) < 18 &&
+//                        getAverageMarksForStudent(studentId) >= 12) {
+//                    if (!courses.contains(course) && course.getUnit() < 20) {
+//                        while (course.getUnit() <= 20) {
+//                            courses.add(course);
+//                            student.setCourses(courses);
+//                        }
+//                        session.saveOrUpdate(student);
+//                    }
+//                } else if (getAverageMarksForStudent(studentId) < 12) {
+//                    if (!courses.contains(course) && course.getUnit() < 14) {
+//                        while (course.getUnit() <= 14) {
+//                            courses.add(course);
+//                            student.setCourses(courses);
+//                        }
+//                        session.saveOrUpdate(student);
+//                    }
+//                }
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 
     @Override

@@ -1,58 +1,46 @@
 package services.Impl;
 
-import entity.Employee;
-import entity.Student;
-import entity.Teacher;
+import base.service.Impl.BaseEntityServiceImpl;
+import domain.Employee;
+import domain.Student;
+import domain.Teacher;
+import repositories.EmployeeRepository;
+import repositories.Impl.EmployeeRepositoryImpl;
 import services.EmployeeService;
 
-public class EmployeeServiceImpl implements EmployeeService {
-    @Override
-    public void saveStudent(Student student) {
+public class EmployeeServiceImpl
+        extends BaseEntityServiceImpl<Employee, Long, EmployeeRepository>
+        implements EmployeeService {
 
+    private  EmployeeRepositoryImpl employeeRepository;
+
+    public EmployeeServiceImpl(EmployeeRepository baseEntityRepository) {
+        super(baseEntityRepository);
+    }
+
+
+    @Override
+    public void saveOrUpdateStudent(Student student) {
+        employeeRepository.saveOrUpdateStudent(student);
     }
 
     @Override
-    public void deleteStudent(String StudentCode) {
-
+    public void deleteStudent(Student student) {
+        employeeRepository.deleteStudent(student);
     }
 
     @Override
-    public void updateStudent(Student student, Long id) {
-
+    public void saveOrUpdateTeacher(Teacher teacher) {
+        employeeRepository.saveOrUpdateTeacher(teacher);
     }
 
     @Override
-    public void saveTeacher(Teacher teacher) {
-
-    }
-
-    @Override
-    public void deleteTeacher(String teacherCode) {
-
-    }
-
-    @Override
-    public void updateTeacher(Teacher teacher, Long id) {
-
-    }
-
-    @Override
-    public void saveEmployee(Employee employee) {
-
-    }
-
-    @Override
-    public void deleteEmployee(String employeeCode) {
-
-    }
-
-    @Override
-    public void updateEmployee(Employee employee, Long id) {
-
+    public void deleteTeacher(Teacher teacher) {
+        employeeRepository.deleteTeacher(teacher);
     }
 
     @Override
     public double seeSalary() {
-        return 0;
+        return 10000000;
     }
 }

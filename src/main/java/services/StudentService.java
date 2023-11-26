@@ -1,16 +1,21 @@
 package services;
 
-import entity.Course;
-import entity.Student;
+import base.service.BaseEntityService;
+import domain.Course;
+import domain.Student;
 
 import java.util.List;
 
-public interface StudentService {
-    void seeStudentItems(Student student, Long id);
+public interface StudentService
+        extends BaseEntityService<Student,Long> {
+
+    void addCourseToStudent(Long studentId, Course course);
 
     List<Course> seeCourses(Long studentId);
 
-    Course seeCoursesInThePreviousTerm(Long studentId,int term);
+    List<Course> notPassesCourses(Long studentId);
 
     double getAverageMarksForStudent(Long studentId);
+
+    List<Course> passesCoursesWithMarks(Long studentId);
 }

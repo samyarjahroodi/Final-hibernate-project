@@ -1,12 +1,12 @@
 package repositories.Impl;
 
 import base.repository.Impl.BaseEntityRepositoryImpl;
-import entity.Course;
+import domain.Course;
 import repositories.CourseRepository;
 
 public class CourseRepositoryImpl
-        extends BaseEntityRepositoryImpl<Course,Long>
-        implements CourseRepository  {
+        extends BaseEntityRepositoryImpl<Course, Long>
+        implements CourseRepository {
 
     @Override
     public Course load(Long aLong) {
@@ -25,6 +25,6 @@ public class CourseRepositoryImpl
 
     @Override
     public Class<Course> getEntityClass() {
-        return null;
+        return Course.class;
     }
 }
