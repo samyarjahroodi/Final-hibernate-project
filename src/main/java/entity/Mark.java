@@ -1,4 +1,4 @@
-package domain;
+package entity;
 
 import base.domain.BaseEntity;
 import lombok.*;

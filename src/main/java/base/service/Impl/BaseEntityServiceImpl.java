@@ -34,4 +34,9 @@ public class BaseEntityServiceImpl<T extends BaseEntity<ID>, ID extends Serializ
     public void delete(ID id) {
         baseEntityRepository.delete(id);
     }
+
+    @Override
+    public boolean signIn(String nationalCode, String EntityCode) {
+        return baseEntityRepository.signIn(nationalCode, nationalCode);
+    }
 }

@@ -1,8 +1,8 @@
 package services.Impl;
 
 import base.service.Impl.BaseEntityServiceImpl;
-import domain.Course;
-import domain.Student;
+import entity.Course;
+import entity.Student;
 import org.hibernate.Session;
 import repositories.Impl.StudentRepositoryImpl;
 import repositories.StudentRepository;

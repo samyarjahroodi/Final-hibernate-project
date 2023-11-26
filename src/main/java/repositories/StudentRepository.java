@@ -1,8 +1,8 @@
 package repositories;
 
 import base.repository.BaseEntityRepository;
-import domain.Course;
-import domain.Student;
+import entity.Course;
+import entity.Student;
 
 import java.util.List;
 

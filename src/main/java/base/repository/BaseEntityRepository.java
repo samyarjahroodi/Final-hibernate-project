@@ -12,4 +12,6 @@ public interface BaseEntityRepository<T extends BaseEntity<ID>, ID extends Seria
 
     void delete(ID id);
 
+    boolean signIn(String nationalCode, String EntityCode);
+
 }

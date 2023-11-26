@@ -1,4 +1,4 @@
-package domain;
+package entity;
 
 import base.domain.BaseEntity;
 import lombok.AllArgsConstructor;
@@ -20,6 +20,9 @@ public class Employee extends BaseEntity<Long> {
 
     @Column(nullable = false)
     private String lastname;
+
+    @Column(nullable = false,unique = true)
+    private String nationalCode;
 
     @Column(unique = true, nullable = false)
     private String employeeCode;

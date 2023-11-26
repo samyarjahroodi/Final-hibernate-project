@@ -1,8 +1,8 @@
 package repositories;
 
 import base.repository.BaseEntityRepository;
-import domain.Course;
-import domain.Teacher;
+import entity.Course;
+import entity.Teacher;
 
 public interface TeacherRepository
         extends BaseEntityRepository<Teacher, Long> {
@@ -12,5 +12,6 @@ public interface TeacherRepository
     void giveMarkToStudents(Course course, int markValue);
 
     Integer getTotalUnitsForTeacher(Long teacherId);
+
 
 }

@@ -1,7 +1,7 @@
 package repositories.Impl;
 
 import base.repository.Impl.BaseEntityRepositoryImpl;
-import domain.Course;
+import entity.Course;
 import repositories.CourseRepository;
 
 public class CourseRepositoryImpl
@@ -26,5 +26,10 @@ public class CourseRepositoryImpl
     @Override
     public Class<Course> getEntityClass() {
         return Course.class;
+    }
+
+    @Override
+    public String getCodeName() {
+        return null;
     }
 }

@@ -1,12 +1,11 @@
 package repositories.Impl;
 
 import base.repository.Impl.BaseEntityRepositoryImpl;
-import domain.Course;
-import domain.Mark;
-import domain.Student;
+import entity.Course;
+import entity.Mark;
+import entity.Student;
 import org.hibernate.Session;
 import repositories.StudentRepository;
-import utility.SessionFactoryProvider;
 
 import javax.persistence.Query;
 import java.util.Collections;
@@ -123,6 +122,11 @@ public class StudentRepositoryImpl
     @Override
     public Class<Student> getEntityClass() {
         return Student.class;
+    }
+
+    @Override
+    public String getCodeName() {
+        return "studentCode";
     }
 
     @Override

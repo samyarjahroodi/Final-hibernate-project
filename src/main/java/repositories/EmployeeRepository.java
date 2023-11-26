@@ -1,9 +1,9 @@
 package repositories;
 
 import base.repository.BaseEntityRepository;
-import domain.Employee;
-import domain.Student;
-import domain.Teacher;
+import entity.Employee;
+import entity.Student;
+import entity.Teacher;
 
 public interface EmployeeRepository
         extends BaseEntityRepository<Employee,Long> {

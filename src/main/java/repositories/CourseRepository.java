@@ -1,7 +1,7 @@
 package repositories;
 
 import base.repository.BaseEntityRepository;
-import domain.Course;
+import entity.Course;
 
 public interface CourseRepository
         extends BaseEntityRepository<Course,Long> {

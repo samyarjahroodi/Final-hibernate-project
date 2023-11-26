@@ -1,13 +1,9 @@
 package services.Impl;
 
-import base.service.BaseEntityService;
 import base.service.Impl.BaseEntityServiceImpl;
-import domain.Course;
-import domain.Employee;
+import entity.Course;
 import repositories.CourseRepository;
-import repositories.EmployeeRepository;
 import services.CourseService;
-import services.EmployeeService;
 
 public class CourseServiceImpl
         extends BaseEntityServiceImpl<Course,Long, CourseRepository>

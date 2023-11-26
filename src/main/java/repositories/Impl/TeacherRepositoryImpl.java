@@ -1,17 +1,18 @@
 package repositories.Impl;
 
 import base.repository.Impl.BaseEntityRepositoryImpl;
-import domain.Course;
-import domain.Mark;
-import domain.Student;
-import domain.Teacher;
+import entity.Course;
+import entity.Mark;
+import entity.Student;
+import entity.Teacher;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import repositories.TeacherRepository;
 
 import java.util.List;
 
-public class TeacherRepositoryImpl extends BaseEntityRepositoryImpl<Teacher, Long>
+public class TeacherRepositoryImpl
+        extends BaseEntityRepositoryImpl<Teacher, Long>
         implements TeacherRepository {
 
     Session session;
@@ -76,5 +77,10 @@ public class TeacherRepositoryImpl extends BaseEntityRepositoryImpl<Teacher, Lon
     @Override
     public Class<Teacher> getEntityClass() {
         return Teacher.class;
+    }
+
+    @Override
+    public String getCodeName() {
+        return "teacherCode";
     }
 }

@@ -1,9 +1,9 @@
 package services.Impl;
 
 import base.service.Impl.BaseEntityServiceImpl;
-import domain.Employee;
-import domain.Student;
-import domain.Teacher;
+import entity.Employee;
+import entity.Student;
+import entity.Teacher;
 import repositories.EmployeeRepository;
 import repositories.Impl.EmployeeRepositoryImpl;
 import services.EmployeeService;

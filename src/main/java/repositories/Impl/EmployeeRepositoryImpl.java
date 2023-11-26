@@ -1,19 +1,18 @@
 package repositories.Impl;
 
 import base.repository.Impl.BaseEntityRepositoryImpl;
-import domain.Employee;
-import domain.Student;
-import domain.Teacher;
+import entity.Employee;
+import entity.Student;
+import entity.Teacher;
 import org.hibernate.Session;
 import repositories.EmployeeRepository;
-import utility.SessionFactoryProvider;
 
 
 public class EmployeeRepositoryImpl
         extends BaseEntityRepositoryImpl<Employee, Long>
         implements EmployeeRepository {
 
-    Session session ;
+    Session session;
 
     public EmployeeRepositoryImpl(Session session) {
         this.session = session;
@@ -77,5 +76,10 @@ public class EmployeeRepositoryImpl
     @Override
     public Class<Employee> getEntityClass() {
         return Employee.class;
+    }
+
+    @Override
+    public String getCodeName() {
+        return "employeeCode";
     }
 }

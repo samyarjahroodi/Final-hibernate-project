@@ -1,4 +1,4 @@
-package domain;
+package entity;
 
 import base.domain.BaseEntity;
 import lombok.AllArgsConstructor;
@@ -15,9 +15,13 @@ import java.util.List;
 @Setter
 @Entity
 public class Teacher extends BaseEntity<Long> {
+
     private String firstname;
 
     private String lastname;
+
+    @Column(unique = true, nullable = false)
+    private String nationalCode;
 
     @Column(unique = true, nullable = false)
     private String teacherCode;
@@ -38,4 +42,5 @@ public class Teacher extends BaseEntity<Long> {
         this.teacherCode = teacherCode;
         this.salary = salary;
     }
+
 }

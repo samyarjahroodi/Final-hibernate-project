@@ -1,8 +1,8 @@
 package services;
 
 import base.service.BaseEntityService;
-import domain.Course;
-import domain.Teacher;
+import entity.Course;
+import entity.Teacher;
 
 public interface TeacherService
         extends BaseEntityService<Teacher, Long> {

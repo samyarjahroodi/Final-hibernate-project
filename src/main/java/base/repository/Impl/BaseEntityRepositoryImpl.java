@@ -3,6 +3,7 @@ package base.repository.Impl;
 import base.domain.BaseEntity;
 import base.repository.BaseEntityRepository;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 import utility.SessionFactoryProvider;
 
 import java.io.Serializable;
@@ -58,6 +59,26 @@ public abstract class BaseEntityRepositoryImpl<T extends BaseEntity<ID>, ID exte
         }
     }
 
+    @Override
+    public boolean signIn(String nationalCode, String code) {
+        try {
+            session.getTransaction().begin();
+            String hql = "SELECT COUNT(t) FROM " + getEntityClass().getSimpleName() +
+                    " t WHERE t.nationalCode = :nationalCode AND t." + getCodeName() + " = :code";
+            Query<Long> query = session.createQuery(hql, Long.class);
+            query.setParameter("nationalCode", nationalCode);
+            query.setParameter("code", code);
+            Long count = query.uniqueResult();
+            session.getTransaction().commit();
+            return count != null && count == 1;
+        } catch (Exception e) {
+            e.printStackTrace();
+            session.getTransaction().rollback();
+        }
+        return false;
+    }
+
     public abstract Class<T> getEntityClass();
 
+    public abstract String getCodeName();
 }

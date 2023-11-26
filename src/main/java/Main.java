@@ -1,16 +1,11 @@
 import com.github.javafaker.Faker;
-import domain.Course;
-import domain.Student;
-import domain.Teacher;
-import org.apache.commons.lang3.RandomStringUtils;
+import entity.Student;
+import entity.Teacher;
 import org.hibernate.Session;
-import services.CourseService;
 import services.StudentService;
 import services.TeacherService;
 import utility.ApplicationContext;
 import utility.SessionFactoryProvider;
-
-import java.util.List;
 
 public class Main {
     public static void main(String[] args) {

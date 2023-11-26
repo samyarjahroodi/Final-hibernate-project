@@ -1,8 +1,8 @@
 package services.Impl;
 
 import base.service.Impl.BaseEntityServiceImpl;
-import domain.Course;
-import domain.Teacher;
+import entity.Course;
+import entity.Teacher;
 import repositories.Impl.TeacherRepositoryImpl;
 import repositories.TeacherRepository;
 import services.TeacherService;

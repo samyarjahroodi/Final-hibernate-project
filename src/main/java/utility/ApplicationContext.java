@@ -17,6 +17,10 @@ import services.TeacherService;
 
 public class ApplicationContext {
 
+    public ApplicationContext() {
+
+    }
+
     private static final Session session;
 
     private static final EmployeeRepository EMPLOYEE_REPOSITORY;
@@ -31,8 +35,6 @@ public class ApplicationContext {
 
     private static final TeacherService TEACHER_SERVICE;
 
-    private ApplicationContext() {
-    }
 
     static {
         session = SessionFactoryProvider.getSessionFactory().openSession();
