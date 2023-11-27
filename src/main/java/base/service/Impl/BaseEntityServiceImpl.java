@@ -39,4 +39,9 @@ public class BaseEntityServiceImpl<T extends BaseEntity<ID>, ID extends Serializ
     public boolean signIn(String nationalCode, String EntityCode) {
         return baseEntityRepository.signIn(nationalCode, nationalCode);
     }
+
+    @Override
+    public boolean exist(String nationalCode) {
+        return baseEntityRepository.exist(nationalCode);
+    }
 }

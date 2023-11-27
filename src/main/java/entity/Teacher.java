@@ -34,7 +34,7 @@ public class Teacher extends BaseEntity<Long> {
     private Boolean scienceCommittee;
 
     @OneToMany(mappedBy = "mark", cascade = CascadeType.ALL)
-    private List<Mark> marks;
+    private List<student_Course> student_courses;
 
     public Teacher(String firstname, String lastname, String teacherCode, double salary) {
         this.firstname = firstname;

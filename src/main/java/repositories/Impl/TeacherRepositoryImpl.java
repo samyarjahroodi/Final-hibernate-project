@@ -2,7 +2,7 @@ package repositories.Impl;
 
 import base.repository.Impl.BaseEntityRepositoryImpl;
 import entity.Course;
-import entity.Mark;
+import entity.student_Course;
 import entity.Student;
 import entity.Teacher;
 import org.hibernate.Session;
@@ -10,6 +10,7 @@ import org.hibernate.query.Query;
 import repositories.TeacherRepository;
 
 import java.util.List;
+import java.util.Set;
 
 public class TeacherRepositoryImpl
         extends BaseEntityRepositoryImpl<Teacher, Long>
@@ -31,24 +32,31 @@ public class TeacherRepositoryImpl
     }
 
     @Override
-    public void giveMarkToStudents(Course course, int markValue) {
+    public void giveMarkToStudents(Long id, Course course, int markValue) {
         try {
             session.getTransaction().begin();
-            List<Student> students = course.getStudents();
-            for (Student s : students) {
-                Mark mark = new Mark();
-                mark.setStudents((Student) students);
-                mark.setCourse(course);
-                mark.setTeacher(course.getTeacher());
-                mark.setMark(markValue);
-                session.saveOrUpdate(mark);
-                session.beginTransaction().commit();
+            if (id != null && id.equals(course.getTeacher().getId())) {
+                Set<student_Course> student_courses = course.getStudent_courses();
+                for (student_Course sc : student_courses) {
+                    sc.setMark(markValue);
+                    sc.setPass(isPass(markValue));
+                    session.saveOrUpdate(sc);
+                }
+            } else {
+                throw new Exception("You are not authorized to give marks for this course.");
             }
+            session.getTransaction().commit();
         } catch (Exception e) {
             e.printStackTrace();
-            session.beginTransaction().rollback();
+            session.getTransaction().rollback();
         }
     }
+
+
+    private boolean isPass(int markValue) {
+        return markValue >= 10;
+    }
+
 
     public Integer getTotalUnitsForTeacher(Long teacherId) {
         try {

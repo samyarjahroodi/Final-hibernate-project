@@ -22,11 +22,11 @@ public class TeacherServiceImpl
     }
 
     @Override
-    public void giveMarkToStudents(Course course, int markValue) {
+    public void giveMarkToStudents(Long id,Course course, int markValue) {
         if (markValue < 0 || markValue > 20) {
             System.out.println("Your input must be between 0 and 20");
         } else {
-            teacherRepository.giveMarkToStudents(course,markValue);
+            teacherRepository.giveMarkToStudents(id,course,markValue);
         }
     }
 

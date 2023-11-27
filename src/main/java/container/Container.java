@@ -1,5 +1,6 @@
 package container;
 
+import entity.Student;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import utility.SessionFactoryProvider;
@@ -40,5 +41,45 @@ public class Container {
             return null;
         }
     }
+
+    public static Long getIdBasedOnNationalCodeAndCodeForStudent(String nationalCode, String studentCode) {
+        try {
+            session.getTransaction().begin();
+            String hql = "SELECT id FROM Student WHERE nationalCode =:nationalCode AND studentCode =:studentCode";
+            Query<Long> query = session.createQuery(hql, Long.class);
+            query.setParameter("nationalCode", nationalCode);
+            query.setParameter("studentCode", studentCode);
+            Long id = query.uniqueResult();
+            session.getTransaction().commit();
+            return id;
+        } catch (Exception e) {
+            e.printStackTrace();
+            session.getTransaction().rollback();
+            return null;
+        }
+    }
+
+    public static Long getIdBasedOnNationalCodeAndCodeForEmployee(String nationalCode, String employeeCode) {
+        try {
+            session.getTransaction().begin();
+            String hql = "SELECT id FROM Employee WHERE nationalCode =:nationalCode AND employeeCode =:employeeCode";
+            Query<Long> query = session.createQuery(hql, Long.class);
+            query.setParameter("nationalCode", nationalCode);
+            query.setParameter("employeeCode", employeeCode);
+            Long id = query.uniqueResult();
+            session.getTransaction().commit();
+            return id;
+        } catch (Exception e) {
+            e.printStackTrace();
+            session.getTransaction().rollback();
+            return null;
+        }
+    }
+
+    public static Student getExistedStudent(Long id) {
+        return session.get(Student.class,id);
+    }
+
+
 
 }

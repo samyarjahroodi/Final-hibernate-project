@@ -1,6 +1,7 @@
 import com.github.javafaker.Faker;
 import entity.Student;
 import entity.Teacher;
+import menu.Menu;
 import org.hibernate.Session;
 import services.StudentService;
 import services.TeacherService;
@@ -10,36 +11,7 @@ import utility.SessionFactoryProvider;
 public class Main {
     public static void main(String[] args) {
         Session session = SessionFactoryProvider.getSessionFactory().openSession();
-       // generateFakeStudents();
-       // generateFakeTeachers();
-    }
-    private static void generateFakeStudents() {
-        Faker faker = new Faker();
-        StudentService studentService = ApplicationContext.getStudentService();
-
-        for (int i = 0; i < 500; i++) {
-            String firstName = faker.name().firstName();
-            String lastName = faker.name().lastName();
-            String studentCode = faker.number().digits(8);
-
-            Student student = new Student(firstName, lastName, studentCode);
-            studentService.saveOrUpdate(student);
-        }
-    }
-
-    private static void generateFakeTeachers() {
-        Faker faker = new Faker();
-        TeacherService teacherService = ApplicationContext.getTeacherService();
-
-        for (int i = 0; i < 500; i++) {
-            String firstName = faker.name().firstName();
-            String lastName = faker.name().lastName();
-            String teacherCode = faker.number().digits(8);
-            double salary = faker.number().randomDouble(2, 30000, 80000);
-
-            Teacher teacher = new Teacher(firstName, lastName, teacherCode, salary);
-            teacherService.saveOrUpdate(teacher);
-        }
+        //Menu.menu();
     }
 
 //    private static void generateFakeCourses() {

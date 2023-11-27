@@ -14,4 +14,6 @@ public interface BaseEntityRepository<T extends BaseEntity<ID>, ID extends Seria
 
     boolean signIn(String nationalCode, String EntityCode);
 
+    boolean exist(String nationalCode);
+
 }

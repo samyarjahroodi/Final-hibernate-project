@@ -19,7 +19,7 @@ public class SessionFactoryProvider {
                 .addAnnotatedClass(Employee.class)
                 .addAnnotatedClass(Student.class)
                 .addAnnotatedClass(Teacher.class)
-                .addAnnotatedClass(Mark.class)
+                .addAnnotatedClass(student_Course.class)
                 .buildMetadata()
                 .buildSessionFactory();
     }

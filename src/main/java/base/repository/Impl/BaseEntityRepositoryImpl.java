@@ -78,6 +78,23 @@ public abstract class BaseEntityRepositoryImpl<T extends BaseEntity<ID>, ID exte
         return false;
     }
 
+    @Override
+    public boolean exist(String nationalCode) {
+        try {
+            session.beginTransaction().begin();
+            String hql = "SELECT COUNT(t) FROM " + getEntityClass().getName() + " t WHERE t.nationalCode = :nationalCode";
+            Query<Long> query = session.createQuery(hql, Long.class);
+            query.setParameter("nationalCode", nationalCode);
+            Long count = query.uniqueResult();
+            session.getTransaction().commit();
+            return count != null && count == 1;
+        } catch (Exception e) {
+            e.printStackTrace();
+            session.getTransaction().rollback();
+            return false;
+        }
+    }
+
     public abstract Class<T> getEntityClass();
 
     public abstract String getCodeName();

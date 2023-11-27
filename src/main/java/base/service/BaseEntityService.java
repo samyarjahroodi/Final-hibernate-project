@@ -13,4 +13,6 @@ public interface BaseEntityService<T extends BaseEntity<ID>,ID extends Serializa
     void delete(ID id);
 
     boolean signIn(String nationalCode, String EntityCode);
+
+    boolean exist(String nationalCode);
 }

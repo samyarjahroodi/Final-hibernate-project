@@ -9,7 +9,7 @@ public interface TeacherRepository
 
     Teacher seeTeacherItems(Teacher teacher, Long ID);
 
-    void giveMarkToStudents(Course course, int markValue);
+    void giveMarkToStudents(Long id, Course course, int markValue);
 
     Integer getTotalUnitsForTeacher(Long teacherId);
 

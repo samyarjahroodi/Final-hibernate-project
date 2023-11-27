@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.List;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -28,11 +28,8 @@ public class Student extends BaseEntity<Long> {
     @Column(unique = true, nullable = false)
     private String studentCode;
 
-    @ManyToMany
-    private List<Course> courses;
-
-    @OneToMany(mappedBy = "mark", cascade = CascadeType.ALL)
-    private List<Mark> marks;
+    @OneToMany(mappedBy = "students", cascade = CascadeType.ALL)
+    private Set<student_Course> student_courses;
 
     public Student(String firstname, String lastname, String studentCode) {
         this.firstname = firstname;

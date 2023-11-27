@@ -2,7 +2,7 @@ package repositories.Impl;
 
 import base.repository.Impl.BaseEntityRepositoryImpl;
 import entity.Course;
-import entity.Mark;
+import entity.student_Course;
 import entity.Student;
 import org.hibernate.Session;
 import repositories.StudentRepository;
@@ -24,7 +24,7 @@ public class StudentRepositoryImpl
     public double getAverageMarksForStudent(Long studentId) {
         try {
             session.beginTransaction();
-            String hql = "SELECT AVG(m.mark) FROM Mark m WHERE m.students.id = :studentId";
+            String hql = "SELECT AVG(m.mark) FROM student_Course  m WHERE m.students.id = :studentId";
             Query query = session.createQuery(hql);
             query.setParameter("studentId", studentId);
             Double averageMarks = (Double) query.getSingleResult();
@@ -46,8 +46,8 @@ public class StudentRepositoryImpl
     public List<Course> passesCoursesWithMarks(Long studentId) {
         try {
             session.beginTransaction().begin();
-            String hql = "SELECT m.course FROM Mark m WHERE m.students.id = :studentId AND m.isPass = true";
-            Query query = session.createQuery(hql);
+            String hql = "SELECT m.course FROM student_Course m WHERE m.students.id = :studentId AND m.isPass = true";
+            Query query = session.createQuery(hql, Course.class);
             query.setParameter("studentId", studentId);
             List<Course> passedCourses = query.getResultList();
             session.getTransaction().commit();
@@ -69,49 +69,18 @@ public class StudentRepositoryImpl
             e.printStackTrace();
             session.getTransaction().rollback();
         }
-//        try {
-//            Student student = session.get(Student.class, studentId);
-//            if (student != null) {
-//                List<Course> courses = student.getCourses();
-//                if (getAverageMarksForStudent(studentId) >= 18) {
-//                    if (!courses.contains(course) && course.getUnit() < 24) {
-//                        while (course.getUnit() <= 24) {
-//                            courses.add(course);
-//                            student.setCourses(courses);
-//                        }
-//                        session.saveOrUpdate(student);
-//                    }
-//                } else if (getAverageMarksForStudent(studentId) < 18 &&
-//                        getAverageMarksForStudent(studentId) >= 12) {
-//                    if (!courses.contains(course) && course.getUnit() < 20) {
-//                        while (course.getUnit() <= 20) {
-//                            courses.add(course);
-//                            student.setCourses(courses);
-//                        }
-//                        session.saveOrUpdate(student);
-//                    }
-//                } else if (getAverageMarksForStudent(studentId) < 12) {
-//                    if (!courses.contains(course) && course.getUnit() < 14) {
-//                        while (course.getUnit() <= 14) {
-//                            courses.add(course);
-//                            student.setCourses(courses);
-//                        }
-//                        session.saveOrUpdate(student);
-//                    }
-//                }
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
     }
 
     @Override
     public List<Course> seeCourses(Long studentId) {
         try {
-            session.getTransaction().begin();
+            session.beginTransaction().begin();
             Student student = session.get(Student.class, studentId);
+            List<Course> allCourses = student.getStudent_courses().stream()
+                    .map(student_Course::getCourse)
+                    .toList();
             session.getTransaction().commit();
-            return student.getCourses();
+            return allCourses;
         } catch (Exception e) {
             e.printStackTrace();
             session.getTransaction().rollback();
@@ -120,28 +89,19 @@ public class StudentRepositoryImpl
     }
 
     @Override
-    public Class<Student> getEntityClass() {
-        return Student.class;
-    }
-
-    @Override
-    public String getCodeName() {
-        return "studentCode";
-    }
-
-    @Override
     public List<Course> passesCourses(Long studentId) {
         try {
             session.beginTransaction().begin();
             Student student = session.get(Student.class, studentId);
-            List<Course> allCourses = student.getCourses();
+            List<Course> passedCourses = student.getStudent_courses().stream()
+                    .filter(student_Course::isPass)
+                    .map(student_Course::getCourse)
+                    .toList();
             session.getTransaction().commit();
-            return allCourses.stream()
-                    .filter(course -> course.getMarks()
-                            .stream().anyMatch(Mark::isPass)).toList();
+            return passedCourses;
         } catch (Exception e) {
             e.printStackTrace();
-            session.getTransaction().commit();
+            session.getTransaction().rollback();
             return Collections.emptyList();
         }
     }
@@ -151,15 +111,27 @@ public class StudentRepositoryImpl
         try {
             session.beginTransaction().begin();
             Student student = session.get(Student.class, studentId);
-            List<Course> allCourses = student.getCourses();
+            List<Course> notPassedCourses = student.getStudent_courses().stream()
+                    .filter(reportCard -> !reportCard.isPass())
+                    .map(student_Course::getCourse)
+                    .toList();
             session.getTransaction().commit();
-            return allCourses.stream()
-                    .filter(course -> course.getMarks()
-                            .stream().anyMatch(Mark -> !Mark.isPass())).toList();
+            return notPassedCourses;
         } catch (Exception e) {
             e.printStackTrace();
-            session.getTransaction().commit();
+            session.getTransaction().rollback();
             return Collections.emptyList();
         }
+    }
+
+
+    @Override
+    public Class<Student> getEntityClass() {
+        return Student.class;
+    }
+
+    @Override
+    public String getCodeName() {
+        return "studentCode";
     }
 }

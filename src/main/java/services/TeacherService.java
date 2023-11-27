@@ -8,7 +8,7 @@ public interface TeacherService
         extends BaseEntityService<Teacher, Long> {
     Teacher seeTeacherItems(Teacher teacher, Long ID);
 
-    void giveMarkToStudents(Course course, int markValue);
+    void giveMarkToStudents(Long id, Course course, int markValue);
 
     double salary(Long teacherId, boolean scienceCommittee);
 

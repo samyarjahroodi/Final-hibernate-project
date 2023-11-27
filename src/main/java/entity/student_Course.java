@@ -12,7 +12,7 @@ import javax.persistence.ManyToOne;
 @NoArgsConstructor
 @Getter
 @Setter
-public class Mark extends BaseEntity<Long> {
+public class student_Course extends BaseEntity<Long> {
 
     @ManyToOne(cascade = CascadeType.ALL)
     private Student students;
@@ -26,6 +26,5 @@ public class Mark extends BaseEntity<Long> {
     private Teacher teacher;
 
     private boolean isPass;
-
 
 }

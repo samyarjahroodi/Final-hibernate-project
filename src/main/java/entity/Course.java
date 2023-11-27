@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.List;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -27,9 +27,9 @@ public class Course extends BaseEntity<Long> {
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
 
-    @ManyToMany
-    private List<Student> students;
+//    @OneToMany
+//    private List<Student> students;
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
-    private List<Mark> marks;
+    private Set<student_Course> student_courses;
 }
