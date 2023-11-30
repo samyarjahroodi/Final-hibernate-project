@@ -11,7 +11,7 @@ public class SessionFactoryProvider {
 
     static {
         StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
-                .configure() // by default load hibernate.cfg.xml
+                .configure()
                 .build();
 
         sessionFactory = new MetadataSources(registry)

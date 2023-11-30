@@ -5,11 +5,12 @@ import entity.Course;
 import entity.Student;
 
 import java.util.List;
+import java.util.Set;
 
 public interface StudentRepository
         extends BaseEntityRepository<Student, Long> {
 
-    void addCourseToStudent(Long studentId, Course course);
+    Set<Course> addCourseToStudent(Long studentId, Long id);
 
     List<Course> seeCourses(Long studentId);
 
@@ -20,5 +21,9 @@ public interface StudentRepository
     double getAverageMarksForStudent(Long studentId);
 
     List<Course> passesCoursesWithMarks(Long studentId);
+
+    Long getIdBasedOnNationalCodeAndCodeForStudent(String nationalCode, String studentCode);
+
+    Student getExistedStudent(Long id);
 
 }

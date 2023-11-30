@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -29,7 +30,7 @@ public class Teacher extends BaseEntity<Long> {
     private double salary;
 
     @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL)
-    private List<Course> course;
+    private Set<Course> courses;
 
     private Boolean scienceCommittee;
 

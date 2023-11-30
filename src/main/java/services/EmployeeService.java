@@ -6,7 +6,7 @@ import entity.Student;
 import entity.Teacher;
 
 public interface EmployeeService
-        extends BaseEntityService<Employee,Long> {
+        extends BaseEntityService<Employee, Long> {
 
     void saveOrUpdateStudent(Student student);
 
@@ -18,5 +18,9 @@ public interface EmployeeService
 
     double seeSalary();
 
+    boolean signIn(String nationalCode, String code);
 
+    Long getIdBasedOnNationalCodeAndCodeForEmployee(String nationalCode, String employeeCode);
+
+    Employee getExistedEmployee(Long id);
 }

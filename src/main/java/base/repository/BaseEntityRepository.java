@@ -12,8 +12,16 @@ public interface BaseEntityRepository<T extends BaseEntity<ID>, ID extends Seria
 
     void delete(ID id);
 
-    boolean signIn(String nationalCode, String EntityCode);
-
     boolean exist(String nationalCode);
+
+    boolean signIn(String nationalCode, String code);
+
+    void openSession();
+
+    void commitSession();
+
+    void rollBack();
+
+    void closeSession();
 
 }

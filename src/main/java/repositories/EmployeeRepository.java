@@ -6,7 +6,7 @@ import entity.Student;
 import entity.Teacher;
 
 public interface EmployeeRepository
-        extends BaseEntityRepository<Employee,Long> {
+        extends BaseEntityRepository<Employee, Long> {
 
     void saveOrUpdateStudent(Student student);
 
@@ -17,5 +17,11 @@ public interface EmployeeRepository
     void deleteTeacher(Teacher teacher);
 
     double seeSalary();
+
+    boolean signIn(String nationalCode, String code);
+
+    Long getIdBasedOnNationalCodeAndCodeForEmployee(String nationalCode, String employeeCode);
+
+    Employee getExistedEmployee(Long id);
 
 }

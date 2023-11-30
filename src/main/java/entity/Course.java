@@ -4,6 +4,7 @@ import base.domain.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -12,6 +13,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Entity
+@ToString
 public class Course extends BaseEntity<Long> {
 
     @Column(nullable = false)
@@ -27,9 +29,14 @@ public class Course extends BaseEntity<Long> {
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
 
-//    @OneToMany
-//    private List<Student> students;
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
+    @ToString.Exclude
     private Set<student_Course> student_courses;
+
+    public void setStudent_courses(Set<student_Course> student_courses) {
+        this.student_courses = student_courses;
+    }
+
 }
+

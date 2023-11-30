@@ -5,6 +5,8 @@ import entity.Employee;
 import entity.Student;
 import entity.Teacher;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
+import org.hibernate.resource.transaction.spi.TransactionStatus;
 import repositories.EmployeeRepository;
 
 
@@ -12,60 +14,75 @@ public class EmployeeRepositoryImpl
         extends BaseEntityRepositoryImpl<Employee, Long>
         implements EmployeeRepository {
 
-    Session session;
-
     public EmployeeRepositoryImpl(Session session) {
-        this.session = session;
+        super(session);
     }
 
     @Override
     public void saveOrUpdateStudent(Student student) {
         try {
-            session.beginTransaction().begin();
+            openSession();
             session.saveOrUpdate(student);
-            session.getTransaction().commit();
+            commitSession();
         } catch (Exception e) {
             e.printStackTrace();
-            session.getTransaction().rollback();
+            rollBack();
+        } finally {
+            closeSession();
         }
     }
 
     @Override
     public void deleteStudent(Student student) {
         try {
-            session.beginTransaction().begin();
+            openSession();
             Student student1 = session.find(Student.class, student.getId());
             session.delete(student1);
-            session.beginTransaction().commit();
+            commitSession();
         } catch (Exception e) {
             e.printStackTrace();
-            session.beginTransaction().rollback();
+            rollBack();
         }
     }
 
     @Override
     public void saveOrUpdateTeacher(Teacher teacher) {
         try {
-            session.beginTransaction().begin();
+            openSession();
             session.saveOrUpdate(teacher);
-            session.beginTransaction().commit();
+            commitSession();
         } catch (Exception e) {
             e.printStackTrace();
-            session.beginTransaction().rollback();
+            rollBack();
         }
     }
 
     @Override
     public void deleteTeacher(Teacher teacher) {
         try {
-            session.beginTransaction().begin();
+            openSession();
             Teacher teacher1 = session.find(Teacher.class, teacher.getId());
             session.delete(teacher1);
-            session.beginTransaction().commit();
+            commitSession();
         } catch (Exception e) {
             e.printStackTrace();
-            session.beginTransaction().rollback();
+            rollBack();
         }
+    }
+
+
+    @Override
+    public Long getIdBasedOnNationalCodeAndCodeForEmployee(String nationalCode, String employeeCode) {
+        String hql = "SELECT id FROM Employee WHERE nationalCode =:nationalCode AND employeeCode =:employeeCode";
+        Query<Long> query = session.createQuery(hql, Long.class);
+        query.setParameter("nationalCode", nationalCode);
+        query.setParameter("employeeCode", employeeCode);
+        Long id = query.uniqueResult();
+        return id;
+    }
+
+    public Employee getExistedEmployee(Long id) {
+        return session.get(Employee.class, id);
     }
 
     @Override
@@ -82,4 +99,6 @@ public class EmployeeRepositoryImpl
     public String getCodeName() {
         return "employeeCode";
     }
+
 }
+

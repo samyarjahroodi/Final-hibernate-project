@@ -9,6 +9,7 @@ import org.hibernate.Session;
 import org.hibernate.query.Query;
 import repositories.TeacherRepository;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -16,25 +17,15 @@ public class TeacherRepositoryImpl
         extends BaseEntityRepositoryImpl<Teacher, Long>
         implements TeacherRepository {
 
-    Session session;
-
     public TeacherRepositoryImpl(Session session) {
-        this.session = session;
+        super(session);
     }
 
-    @Override
-    public Teacher seeTeacherItems(Teacher teacher, Long id) {
-
-        session.beginTransaction().begin();
-        session.load(teacher, id);
-        session.beginTransaction().commit();
-        return null;
-    }
 
     @Override
     public void giveMarkToStudents(Long id, Course course, int markValue) {
         try {
-            session.getTransaction().begin();
+            openSession();
             if (id != null && id.equals(course.getTeacher().getId())) {
                 Set<student_Course> student_courses = course.getStudent_courses();
                 for (student_Course sc : student_courses) {
@@ -45,40 +36,89 @@ public class TeacherRepositoryImpl
             } else {
                 throw new Exception("You are not authorized to give marks for this course.");
             }
-            session.getTransaction().commit();
+            commitSession();
         } catch (Exception e) {
             e.printStackTrace();
-            session.getTransaction().rollback();
+            rollBack();
         }
     }
 
+    public Long getIdBasedOnNationalCodeAndCodeForTeacher(String nationalCode, String teacherCode) {
 
-    private boolean isPass(int markValue) {
-        return markValue >= 10;
+        String hql = "SELECT id FROM Teacher WHERE nationalCode = :nationalCode AND teacherCode = :teacherCode";
+        Query<Long> query = session.createQuery(hql, Long.class);
+        query.setParameter("nationalCode", nationalCode);
+        query.setParameter("teacherCode", teacherCode);
+        return query.uniqueResult();
+
     }
 
 
     public Integer getTotalUnitsForTeacher(Long teacherId) {
+
+        String hql = "SELECT SUM(c.unit) FROM Course c WHERE c.teacher.id = :teacherId";
+        Query query = session.createQuery(hql, Teacher.class);
+        query.setParameter("teacherId", teacherId);
+        Integer totalUnits = (Integer) query.uniqueResult();
+        return totalUnits != null ? totalUnits : 0;
+
+    }
+
+
+    @Override
+    public Set<Course> teacherCourse(Long id) {
+        Teacher teacher = session.get(Teacher.class, id);
+        return teacher.getCourses();
+
+    }
+
+    @Override
+    public List<Long> teacherCoursesBasedOnId(Long id) {
         try {
-            session.beginTransaction();
-
-            String hql = "SELECT SUM(c.unit) FROM Course c WHERE c.teacher.id = :teacherId";
-            Query query = session.createQuery(hql);
-            query.setParameter("teacherId", teacherId);
-            Integer totalUnits = (Integer) query.uniqueResult();
-
-            session.getTransaction().commit();
-
-            return totalUnits != null ? totalUnits : 0;
+            String hql = "SELECT c.id FROM Course c " +
+                    "JOIN c.teacher t " +
+                    "WHERE t.id = :teacherId";
+            Query<Long> query = session.createQuery(hql, Long.class);
+            query.setParameter("teacherId", id);
+            return query.getResultList();
         } catch (Exception e) {
             e.printStackTrace();
             session.getTransaction().rollback();
-            return 0;
-        } finally {
-            if (session != null && session.isOpen()) {
-                session.close();
-            }
+            return Collections.emptyList();
         }
+    }
+
+
+    @Override
+    public Boolean scienceCommittee(Long id) {
+        Teacher teacher = session.get(Teacher.class, id);
+        return teacher.getScienceCommittee();
+    }
+
+    @Override
+    public List<Student> seeStudentOfCourse(Long teacherId, Long courseId) {
+        try {
+            String hql = "SELECT sc.students FROM student_Course sc " +
+                    "JOIN sc.course c " +
+                    "JOIN c.teacher t " +
+                    "WHERE t.id = :teacherId AND c.id = :courseId";
+            Query<Student> query = session.createQuery(hql, Student.class);
+            query.setParameter("teacherId", teacherId);
+            query.setParameter("courseId", courseId);
+            return query.getResultList();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
+    }
+
+    public Teacher getExistedTeacher(Long id) {
+        return session.get(Teacher.class, id);
+    }
+
+    private boolean isPass(int markValue) {
+        return markValue >= 10;
     }
 
 
@@ -91,4 +131,5 @@ public class TeacherRepositoryImpl
     public String getCodeName() {
         return "teacherCode";
     }
+
 }

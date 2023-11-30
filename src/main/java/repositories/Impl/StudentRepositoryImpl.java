@@ -5,123 +5,128 @@ import entity.Course;
 import entity.student_Course;
 import entity.Student;
 import org.hibernate.Session;
+import org.hibernate.resource.transaction.spi.TransactionStatus;
 import repositories.StudentRepository;
 
 import javax.persistence.Query;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class StudentRepositoryImpl
         extends BaseEntityRepositoryImpl<Student, Long>
         implements StudentRepository {
-    Session session;
 
     public StudentRepositoryImpl(Session session) {
-        this.session = session;
+        super(session);
     }
 
     @Override
     public double getAverageMarksForStudent(Long studentId) {
-        try {
-            session.beginTransaction();
-            String hql = "SELECT AVG(m.mark) FROM student_Course  m WHERE m.students.id = :studentId";
-            Query query = session.createQuery(hql);
-            query.setParameter("studentId", studentId);
-            Double averageMarks = (Double) query.getSingleResult();
-            session.getTransaction().commit();
 
-            return averageMarks != null ? averageMarks : 0.0;
-        } catch (Exception e) {
-            e.printStackTrace();
-            session.getTransaction().rollback();
-            return 0.0;
-        } finally {
-            if (session != null && session.isOpen()) {
-                session.close();
-            }
-        }
+        String hql = "SELECT AVG(m.mark) FROM student_Course  m WHERE m.students.id = :studentId";
+        Query query = session.createQuery(hql);
+        query.setParameter("studentId", studentId);
+        Double averageMarks = (Double) query.getSingleResult();
+        return averageMarks != null ? averageMarks : 0.0;
+
     }
 
     @Override
     public List<Course> passesCoursesWithMarks(Long studentId) {
-        try {
-            session.beginTransaction().begin();
-            String hql = "SELECT m.course FROM student_Course m WHERE m.students.id = :studentId AND m.isPass = true";
-            Query query = session.createQuery(hql, Course.class);
-            query.setParameter("studentId", studentId);
-            List<Course> passedCourses = query.getResultList();
-            session.getTransaction().commit();
-            return passedCourses;
-        } catch (Exception e) {
-            e.printStackTrace();
-            session.getTransaction().rollback();
-            return Collections.emptyList();
-        }
-    }
 
-
-    public void addCourseToStudent(Long studentId, Course course) {
-        try {
-            session.beginTransaction().begin();
-            session.saveOrUpdate(course);
-            session.getTransaction().commit();
-        } catch (Exception e) {
-            e.printStackTrace();
-            session.getTransaction().rollback();
-        }
+        String hql = "SELECT m.course FROM student_Course m WHERE m.students.id = :studentId AND m.isPass = true";
+        Query query = session.createQuery(hql, Course.class);
+        query.setParameter("studentId", studentId);
+        List<Course> passedCourses = query.getResultList();
+        return passedCourses;
     }
 
     @Override
-    public List<Course> seeCourses(Long studentId) {
+    public Set<Course> addCourseToStudent(Long studentId, Long courseId) {
+        Set<Course> updatedCourses = new HashSet<>();
+
         try {
-            session.beginTransaction().begin();
+            openSession();
+
+            // Retrieve the student and course entities
             Student student = session.get(Student.class, studentId);
-            List<Course> allCourses = student.getStudent_courses().stream()
-                    .map(student_Course::getCourse)
-                    .toList();
-            session.getTransaction().commit();
-            return allCourses;
+            Course course = session.get(Course.class, courseId);
+
+            // Check if student or course is null
+            if (student == null || course == null) {
+                System.out.println("Student or course not found.");
+                return updatedCourses; // or throw an exception, depending on your design
+            }
+
+            // Create a new student_Course entity
+            student_Course studentCourse = new student_Course();
+            studentCourse.setStudents(student);
+            studentCourse.setCourse(course);
+
+            // Save the student_Course entity
+            session.save(studentCourse);
+
+            // Update the set of courses for the student
+            updatedCourses = student.getStudent_courses().stream()
+                    .map(studentCourse1 -> studentCourse1.getCourse())
+                    .collect(Collectors.toSet());
+
+            commitSession();
         } catch (Exception e) {
             e.printStackTrace();
-            session.getTransaction().rollback();
-            return Collections.emptyList();
+            rollBack();
         }
+
+        return updatedCourses;
+    }
+
+
+    @Override
+    public List<Course> seeCourses(Long studentId) {
+
+        Student student = session.get(Student.class, studentId);
+        return student.getStudent_courses().stream()
+                .map(student_Course::getCourse)
+                .toList();
+
     }
 
     @Override
     public List<Course> passesCourses(Long studentId) {
-        try {
-            session.beginTransaction().begin();
-            Student student = session.get(Student.class, studentId);
-            List<Course> passedCourses = student.getStudent_courses().stream()
-                    .filter(student_Course::isPass)
-                    .map(student_Course::getCourse)
-                    .toList();
-            session.getTransaction().commit();
-            return passedCourses;
-        } catch (Exception e) {
-            e.printStackTrace();
-            session.getTransaction().rollback();
-            return Collections.emptyList();
-        }
+
+        Student student = session.get(Student.class, studentId);
+        return student.getStudent_courses().stream()
+                .filter(student_Course::isPass)
+                .map(student_Course::getCourse)
+                .toList();
+
     }
 
     @Override
     public List<Course> notPassesCourses(Long studentId) {
-        try {
-            session.beginTransaction().begin();
-            Student student = session.get(Student.class, studentId);
-            List<Course> notPassedCourses = student.getStudent_courses().stream()
-                    .filter(reportCard -> !reportCard.isPass())
-                    .map(student_Course::getCourse)
-                    .toList();
-            session.getTransaction().commit();
-            return notPassedCourses;
-        } catch (Exception e) {
-            e.printStackTrace();
-            session.getTransaction().rollback();
-            return Collections.emptyList();
-        }
+
+        Student student = session.get(Student.class, studentId);
+        return student.getStudent_courses().stream()
+                .filter(reportCard -> !reportCard.isPass())
+                .map(student_Course::getCourse)
+                .toList();
+
+    }
+
+    public Long getIdBasedOnNationalCodeAndCodeForStudent(String nationalCode, String studentCode) {
+
+        String hql = "SELECT id FROM Student WHERE nationalCode =:nationalCode AND studentCode =:studentCode";
+        org.hibernate.query.Query<Long> query = session.createQuery(hql, Long.class);
+        query.setParameter("nationalCode", nationalCode);
+        query.setParameter("studentCode", studentCode);
+        return query.uniqueResult();
+    }
+
+    public Student getExistedStudent(Long id) {
+        return session.get(Student.class, id);
     }
 
 

@@ -12,6 +12,7 @@ import javax.persistence.ManyToOne;
 @NoArgsConstructor
 @Getter
 @Setter
+@ToString
 public class student_Course extends BaseEntity<Long> {
 
     @ManyToOne(cascade = CascadeType.ALL)

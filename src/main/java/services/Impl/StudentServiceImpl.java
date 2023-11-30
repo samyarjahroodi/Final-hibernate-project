@@ -18,17 +18,18 @@ public class StudentServiceImpl
         implements StudentService {
 
     Session session = SessionFactoryProvider.getSessionFactory().openSession();
-    private  StudentRepositoryImpl studentRepository;
+    private StudentRepositoryImpl studentRepository;
 
     public StudentServiceImpl(StudentRepository baseEntityRepository) {
         super(baseEntityRepository);
     }
 
-
     @Override
-    public void addCourseToStudent(Long studentId, Course course) {
+    public Set<student_Course> addCourseToStudent(Long studentId, Long id) {
         Student student = session.get(Student.class, studentId);
         if (student != null) {
+            List<Course> courses = notPassesCourses(studentId);
+
             Set<student_Course> student_courses = student.getStudent_courses();
             int totalUnits = student_courses.stream().mapToInt(rc -> rc.getCourse().getUnit()).sum();
 
@@ -43,14 +44,17 @@ public class StudentServiceImpl
                 unitLimit = 14;
             }
 
-            if (!student_courses.stream().anyMatch(rc -> rc.getCourse().equals(course)) &&
-                    (totalUnits + course.getUnit()) <= unitLimit) {
-                student_Course student_course= new student_Course();
-                student_course.setCourse(course);
-                student_course.setStudents(student);
-                session.saveOrUpdate(student_course);
+            for (Course course : courses) {
+                if (!student_courses.stream().anyMatch(rc -> rc.getCourse().equals(course)) &&
+                        (totalUnits + course.getUnit()) <= unitLimit) {
+                    student_Course student_course = new student_Course();
+                    student_course.setCourse(course);
+                    student_course.setStudents(student);
+                    session.saveOrUpdate(student_course);
+                }
             }
         }
+        return null;
     }
 
 
@@ -107,5 +111,15 @@ public class StudentServiceImpl
     @Override
     public List<Course> passesCoursesWithMarks(Long studentId) {
         return studentRepository.passesCoursesWithMarks(studentId);
+    }
+
+    @Override
+    public Student getExistedStudent(Long id) {
+        return studentRepository.getExistedStudent(id);
+    }
+
+    @Override
+    public Long getIdBasedOnNationalCodeAndCodeForStudent(String nationalCode, String studentCode) {
+        return studentRepository.getIdBasedOnNationalCodeAndCodeForStudent(nationalCode, studentCode);
     }
 }

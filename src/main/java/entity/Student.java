@@ -1,10 +1,7 @@
 package entity;
 
 import base.domain.BaseEntity;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -29,11 +26,22 @@ public class Student extends BaseEntity<Long> {
     private String studentCode;
 
     @OneToMany(mappedBy = "students", cascade = CascadeType.ALL)
+    @ToString.Exclude
     private Set<student_Course> student_courses;
 
     public Student(String firstname, String lastname, String studentCode) {
         this.firstname = firstname;
         this.lastname = lastname;
         this.studentCode = studentCode;
+    }
+
+    @Override
+    public String toString() {
+        return "Student{" +
+                "firstname='" + firstname + '\'' +
+                ", lastname='" + lastname + '\'' +
+                ", nationalCode='" + nationalCode + '\'' +
+                ", studentCode='" + studentCode + '\'' +
+                '}';
     }
 }

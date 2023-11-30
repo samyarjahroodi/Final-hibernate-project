@@ -4,44 +4,36 @@ import base.domain.BaseEntity;
 import base.repository.BaseEntityRepository;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
-import utility.SessionFactoryProvider;
 
 import java.io.Serializable;
 
-public abstract class BaseEntityRepositoryImpl<T extends BaseEntity<ID>, ID extends Serializable>
+public abstract class BaseEntityRepositoryImpl
+        <T extends BaseEntity<ID>, ID extends Serializable>
         implements BaseEntityRepository<T, ID> {
-    private final Session session;
 
-    public BaseEntityRepositoryImpl() {
-        this.session = SessionFactoryProvider.getSessionFactory().openSession();
+    protected final Session session;
+
+    protected BaseEntityRepositoryImpl(Session session) {
+        this.session = session;
     }
+
 
     @Override
     public T load(ID id) {
         T loadedEntity = null;
-        try {
-            session.beginTransaction();
-            loadedEntity = session.load(getEntityClass(), id);
-            session.getTransaction().commit();
-        } catch (Exception e) {
-            if (session.getTransaction() != null) {
-                session.getTransaction().rollback();
-            }
-            e.printStackTrace();
-        }
+        loadedEntity = session.load(getEntityClass(), id);
         return loadedEntity;
     }
-
 
     @Override
     public T saveOrUpdate(T t) {
         try {
-            session.beginTransaction().begin();
+            openSession();
             session.saveOrUpdate(t);
-            session.getTransaction().commit();
+            commitSession();
         } catch (Exception e) {
             e.printStackTrace();
-            session.beginTransaction().rollback();
+            rollBack();
         }
         return t;
     }
@@ -49,53 +41,98 @@ public abstract class BaseEntityRepositoryImpl<T extends BaseEntity<ID>, ID exte
     @Override
     public void delete(ID id) {
         try {
-            session.beginTransaction().begin();
+            openSession();
             T t = session.get(getEntityClass(), id);
             session.remove(t);
-            session.getTransaction().commit();
+            commitSession();
         } catch (Exception e) {
             e.printStackTrace();
-            session.getTransaction().rollback();
+            rollBack();
+        }
+    }
+
+    @Override
+    public boolean exist(String nationalCode) {
+        try {
+            openSession();
+            String hql = "SELECT COUNT(t) FROM " + getEntityClass().getName() + " t WHERE t.nationalCode = :nationalCode";
+            Query<Long> query = session.createQuery(hql, Long.class);
+            query.setParameter("nationalCode", nationalCode);
+            Long count = query.uniqueResult();
+            commitSession(); // Move this line into the try block
+            return count != null && count == 1;
+        } catch (Exception e) {
+            e.printStackTrace();
+            rollBack();
+            return false;
+        } finally {
+            closeSession();  // Ensure that you close the session in the finally block
         }
     }
 
     @Override
     public boolean signIn(String nationalCode, String code) {
         try {
-            session.getTransaction().begin();
-            String hql = "SELECT COUNT(t) FROM " + getEntityClass().getSimpleName() +
-                    " t WHERE t.nationalCode = :nationalCode AND t." + getCodeName() + " = :code";
+            openSession();
+            String hql = "SELECT COUNT(e) FROM " + getEntityClass().getSimpleName() + " e WHERE e.nationalCode = :nationalCode AND e." + getCodeName() + " = :code";
             Query<Long> query = session.createQuery(hql, Long.class);
             query.setParameter("nationalCode", nationalCode);
             query.setParameter("code", code);
             Long count = query.uniqueResult();
-            session.getTransaction().commit();
+            commitSession();  // Move this line into the try block
             return count != null && count == 1;
         } catch (Exception e) {
-            e.printStackTrace();
-            session.getTransaction().rollback();
+            e.printStackTrace();  // Log the exception or handle it appropriately
+            rollBack();  // Rollback the transaction in case of an exception
+            return false;
         }
-        return false;
+    }
+
+
+
+    public Long getIdBasedOnNationalCodeAndCodeForTeacher(String nationalCode, String teacherCode) {
+
+        String hql = "SELECT id FROM Teacher WHERE nationalCode = :nationalCode AND teacherCode = :teacherCode";
+        Query<Long> query = session.createQuery(hql, Long.class);
+        query.setParameter("nationalCode", nationalCode);
+        query.setParameter("teacherCode", teacherCode);
+        return query.uniqueResult();
     }
 
     @Override
-    public boolean exist(String nationalCode) {
-        try {
-            session.beginTransaction().begin();
-            String hql = "SELECT COUNT(t) FROM " + getEntityClass().getName() + " t WHERE t.nationalCode = :nationalCode";
-            Query<Long> query = session.createQuery(hql, Long.class);
-            query.setParameter("nationalCode", nationalCode);
-            Long count = query.uniqueResult();
+    public void openSession() {
+        if (!session.getTransaction().isActive())
+            session.getTransaction().begin();
+    }
+
+    @Override
+    public void commitSession() {
+        if (session.getTransaction().isActive())
             session.getTransaction().commit();
-            return count != null && count == 1;
+    }
+
+    @Override
+    public void rollBack() {
+        if (session.getTransaction().isActive())
+            session.getTransaction().rollback();
+
+    }
+@Override
+    public void closeSession() {
+        try {
+            if (session != null && session.isOpen()) {
+                if (session.getTransaction() != null && session.getTransaction().isActive()) {
+                    session.getTransaction().rollback();
+                }
+                session.close();
+            }
         } catch (Exception e) {
             e.printStackTrace();
-            session.getTransaction().rollback();
-            return false;
         }
     }
 
     public abstract Class<T> getEntityClass();
 
     public abstract String getCodeName();
+
 }
